@@ -109,19 +109,19 @@ addBook.addEventListener(`click`, ()=> {
 submit.addEventListener('click', ()=> {
 
     if(input_title.validity.valueMissing ) {
-        input_title.setCustomValidity('Enter the title bitch');
+        input_title.setCustomValidity('Enter the book title');
     } else {
         input_title.setCustomValidity('');
     };
 
     if(input_author.validity.valueMissing) {
-       input_author.setCustomValidity('Enter the books author'); 
+       input_author.setCustomValidity('Enter the author'); 
     }else {
         input_author.setCustomValidity('');
     };
 
     if(input_pages.validity.valueMissing) {
-        input_pages.setCustomValidity('Please enter a value bitch');
+        input_pages.setCustomValidity('Please enter a value');
     }else {
         input_pages.setCustomValidity('');
         form.setAttribute('id', 'form_visible');
