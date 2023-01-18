@@ -7,6 +7,11 @@ const input_fields = document.querySelectorAll('input');
 
 const form_read = document.querySelector('#read');
 
+const input_title = document.querySelector('#title');
+const input_author = document.querySelector('#author');
+const input_pages = document.querySelector('#pages');
+
+
 let myLibrary = [];
 
 function Book(title, author, pages, read) {
@@ -16,97 +21,119 @@ function Book(title, author, pages, read) {
     this.read = read;
     };
 
-function addBookToLibrary(item) {
+function addBookFunc() {
+    event.preventDefault();
     myLibrary.push(new Book(title.value, author.value, pages.value, form_read.checked));
+    render();
+    console.log(myLibrary);
+};
 
+function render() {
+    const allparentContainer = document.querySelectorAll('.parentContainer');
+    allparentContainer.forEach(parentContainer => card_container.removeChild(parentContainer));
+
+    for(i=0; i<myLibrary.length; i++) {
+        createBook(myLibrary[i]);
+    }
+};
+
+function createBook(item) {
     const parentContainer = document.createElement('div');
-    parentContainer.setAttribute('id', 'parentContainer')
+    const titleDiv = document.createElement('div');
+    const authorDiv = document.createElement('div');
+    const pagesDiv = document.createElement('div');
+    const readButtons = document.createElement('button');
+    const notreadButtons = document.createElement('button');
 
     const closeButton = document.createElement('button');
     closeButton.setAttribute('id', 'closeButton');
-    let closeText = document.createTextNode("X")
-    closeButton.appendChild(closeText);
+    closeButton.innerText = "X";
     parentContainer.appendChild(closeButton);
 
-    closeButton.addEventListener('click', function(){
-        myLibrary.splice(myLibrary.indexOf(item),1);
-        parentContainer.remove();
-    });
+    closeButton.addEventListener('click', () => {
+        myLibrary.splice(myLibrary.indexOf(item), 1);
+        render();
+        console.log(myLibrary);
+    })
 
-    for (let data in myLibrary[myLibrary.length-1]){
+    parentContainer.classList.add('parentContainer');
+    parentContainer.setAttribute('id', myLibrary.indexOf(item));
 
-        console.log(myLibrary[myLibrary.length-1]);
-        const parentBook = document.createElement(`div`);
-        parentBook.setAttribute('id', 'parentBook')
-        parentBook.textContent = myLibrary[myLibrary.length-1][data];
-        card_container.appendChild(parentContainer);
-        parentContainer.appendChild(parentBook);
-    };
+    titleDiv.textContent = item.title;
+    titleDiv.classList.add('text');
+    parentContainer.appendChild(titleDiv);
 
-    let status = document.querySelectorAll('#parentBook:nth-child(5)');
-    for (const readStatus of status){
-        readStatus.style.display = 'none';
-    }
 
-    let readButtons = document.createElement('button');
-    let readText = document.createTextNode('READ');
+
+    authorDiv.textContent = item.author;
+    authorDiv.classList.add('text');
+    parentContainer.appendChild(authorDiv);
+
+    pagesDiv.textContent = item.pages;
+    pagesDiv.classList.add('text');
+    parentContainer.appendChild(pagesDiv);
+
+    readButtons.innerText = 'READ'; 
     readButtons.classList.add('readButtons');
-    let readButtons2 = document.createElement('button');
-    let readText2 = document.createTextNode('NOT READ');
-    readButtons2.classList.add('readButtons2')
 
-    if(form_read.checked == true) {
-        readButtons.appendChild(readText);
-        parentContainer.appendChild(readButtons); 
-         }else { 
-        readButtons2.appendChild(readText2);
-        parentContainer.appendChild(readButtons2); 
-         }
+    notreadButtons.innerText = 'NOT READ';
+    notreadButtons.classList.add('notreadButtons');
+
+    if(item.read == true) {
+        parentContainer.appendChild(readButtons);
+        }else {
+        parentContainer.appendChild(notreadButtons);
+        };
     
-    readButtons.addEventListener('click', function(){
-            if(readText.nodeValue == "READ"){
-                readText.nodeValue = "NOT READ";
-                myLibrary[0].read = false;
-                readButtons.classList.add('readButtons2');
-            }else{
-                readText.nodeValue = "READ"
-                myLibrary[0].read = true;
-                readButtons.classList.remove('readButtons2');
-             };
-        })
+    readButtons.addEventListener('click', () => {
+        readButtons.parentNode.replaceChild(notreadButtons, readButtons);
+        item.read = false;
+        });
+    
+    notreadButtons.addEventListener('click', () => {
+        notreadButtons.parentNode.replaceChild(readButtons, notreadButtons);
+        item.read = true;
+        });
 
-    readButtons2.addEventListener('click', function(){
-            if(readText2.nodeValue == "NOT READ"){
-                readText2.nodeValue = "READ";
-                myLibrary[0].read = false;
-                readButtons2.classList.remove('readButtons2');
-                readButtons2.classList.add('readButtons');
-            }else{
-                readText2.nodeValue = "NOT READ"
-                myLibrary[0].read = true;
-                readButtons2.classList.remove('readButtons');
-                readButtons2.classList.add('readButtons2');
-             };
-        })
-}
+    card_container.appendChild(parentContainer);
+};
 
 addBook.addEventListener(`click`, ()=> {
     form.removeAttribute('id');
     
     for(const fields of input_fields) {
-        fields.value = "";
+        fields.value = null;
     }
 });
 
 submit.addEventListener('click', ()=> {
-    event.preventDefault();
-    addBookToLibrary();
-    form.setAttribute('id', 'form_visible');
+
+    if(input_title.validity.valueMissing ) {
+        input_title.setCustomValidity('Enter the title bitch');
+    } else {
+        input_title.setCustomValidity('');
+    };
+
+    if(input_author.validity.valueMissing) {
+       input_author.setCustomValidity('Enter the books author'); 
+    }else {
+        input_author.setCustomValidity('');
+    };
+
+    if(input_pages.validity.valueMissing) {
+        input_pages.setCustomValidity('Please enter a value bitch');
+    }else {
+        input_pages.setCustomValidity('');
+        form.setAttribute('id', 'form_visible');
+        addBookFunc();
+    }
 });
 
 document.getElementById('close').addEventListener(`click`, () => {
     form.setAttribute('id', 'form_visible');
 });
+
+
 
 
 
