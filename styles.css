@@ -134,6 +134,10 @@ input[type=number] {
     border-radius: 5px;
 }
 
+input:invalid {
+    background-color: rgb(219, 186, 186);
+}
+
 label {
     display: inline-block;
     width: 60px;
